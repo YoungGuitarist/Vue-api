@@ -13,12 +13,14 @@ const apiClient = axios.create({
   }
 });
 
-export default function useApi(endpoint) {
+export default function useApi(initialEndpoint) {
   const data = ref([]);
   const loading = ref(false);
   const error = ref(null);
   const page = ref(1);
-  const limit = ref(500);
+  const limit = ref(100);
+  const totalItems = ref(0);
+  const currentEndpoint = ref(initialEndpoint);
 
   const fetchData = async (dateFrom = '', dateTo = '') => {
     loading.value = true;
@@ -33,8 +35,9 @@ export default function useApi(endpoint) {
         key: API_KEY
       };
 
-      const response = await apiClient.get(`/${endpoint}`, { params });
+      const response = await apiClient.get(`/${currentEndpoint.value}`, { params });
       data.value = response.data.data;
+      totalItems.value = response.data.total || response.data.data.length;
       return data.value;
     } catch (err) {
       error.value = err.response?.data?.message || err.message;
@@ -44,12 +47,30 @@ export default function useApi(endpoint) {
     }
   };
 
+  const nextPage = () => {
+    if (page.value * limit.value < totalItems.value) {
+      page.value++;
+      return fetchData();
+    }
+  };
+
+  const prevPage = () => {
+    if (page.value > 1) {
+      page.value--;
+      return fetchData();
+    }
+  };
+
   return {
     data,
     loading,
     error,
     page,
     limit,
-    fetchData
+    totalItems,
+    currentEndpoint,
+    fetchData,
+    nextPage,
+    prevPage
   };
 }
