@@ -80,7 +80,7 @@
       Загрузка данных...
     </div>
     <div v-if="error" class="error">
-      ⚠️ Ошибка: {{ error }}
+      Ошибка: {{ error }}
     </div>
     <div v-if="!loading && !error && filteredData.length === 0" class="empty">
       Нет данных для отображения
