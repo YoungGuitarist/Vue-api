@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ref } from "vue";
 
-const API_URL = 'https://109.73.206.144:6969/api';
+const API_URL = 'http://109.73.206.144:6969/api';
 const API_KEY = 'E6kUTYrYwZq2tN4QEtyzsbEBk3ie';
 
 const apiClient = axios.create({
